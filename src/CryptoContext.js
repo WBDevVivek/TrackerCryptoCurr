@@ -139,71 +139,63 @@ export function CryptoContext({ children }) {
 
   // -----------------------------------------
 
-  const fetchCoins = async () => {
-    setLoading(true);
-    const { data } = await axios.get(CoinList(currency));
-    setCoins(data);
-    setLoading(false);
-  };
 
-  const fetchCoin = async () => {
-    const { data } = await axios.get(SingleCoin(paramCoinIDState));
 
-    setCoinDetails(data);
-  };
+  const fetchCoins = React.useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get(CoinList(currency));
+      setCoins(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [currency]);
 
-  const fetchHistoricData = async () => {
-    const { data } = await axios.get(
-      HistoricalChart(paramCoinIDState, days, currency)
-    );
-    setHistoricData(data.prices);
-    setflag(true);
-  };
 
-  // --------------------memoize Var-----------------
 
-  const memoizeParamCoinID = React.useMemo(() => paramCoinIDState, [
-    paramCoinIDState
-  ]);
-  const memoizeDays = React.useMemo(() => days, [days]);
-  const memoizeCurrency = React.useMemo(() => currency, [currency]);
+  const fetchCoin = React.useCallback(async () => {
+    try {
+      const { data } = await axios.get(SingleCoin(paramCoinIDState));
+      setCoinDetails(data);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [paramCoinIDState]);
 
-  // --------------------memoize Var-----------------
 
-  // --------------------memoize fu-----------------
 
-  const memoizeFetchCoins = React.useCallback(
-    () => fetchCoins(),
+  const fetchHistoricData = React.useCallback(async () => {
+    try {
+      const { data } = await axios.get(
+        HistoricalChart(paramCoinIDState, days, currency)
+      );
+      setHistoricData(data.prices);
+      setflag(true);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [paramCoinIDState, days, currency]);
 
-    [memoizeCurrency, memoizeDays]
-  );
 
-  const memoizeFetchCoin = React.useCallback(
-    () => fetchCoin(),
 
-    [memoizeParamCoinID]
-  );
-
-  const memoizeFetchHistoricData = React.useCallback(
-    () => fetchHistoricData(),
-
-    [memoizeParamCoinID, memoizeDays, memoizeCurrency]
-  );
-
-  // --------------------memoize fu-----------------
 
   useEffect(() => {
-    memoizeFetchCoin();
-    memoizeFetchHistoricData();
+    fetchCoin();
+    fetchHistoricData();
     return () => setHistoricData();
-  }, [memoizeParamCoinID, memoizeDays]);
+  }, [fetchCoin, fetchHistoricData]);
+
 
   useEffect(() => {
     if (currency === "INR") setSymbol("₹");
     else if (currency === "USD") setSymbol("$");
-    memoizeFetchHistoricData();
-    memoizeFetchCoins();
-  }, [memoizeCurrency]);
+
+    fetchCoins();
+    fetchHistoricData();
+  }, [currency, fetchCoins, fetchHistoricData]);
+
 
   // for Coinstable state------------------------------------
 

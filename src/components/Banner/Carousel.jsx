@@ -17,6 +17,10 @@ import { NavLink } from "react-router-dom";
 import AliceCarousel from "react-alice-carousel";
 // for react-alice-carousel End
 
+// localDataForTrendingCoins
+import { localTrendingCoins } from "../../localData/localApiData";
+// localDataForTrendingCoins
+
 const useStyle = makeStyles({
   carouselStyle: {
     height: "50%",
@@ -69,7 +73,7 @@ export default function Carousel() {
     let profite = coin.price_change_percentage_24h >= 0;
 
     const numberWithCommas = (x) => {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
     return (
@@ -126,7 +130,7 @@ export default function Carousel() {
               />
               <span style={{ fontSize: 22, fontWeight: 500 }}>
                 {symbol}
-                {numberWithCommas(coin?.current_price.toFixed(2))}
+                {numberWithCommas(coin?.current_price?.toFixed(2))}
               </span>
             </NavLink>
           </Paper>

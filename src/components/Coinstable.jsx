@@ -81,7 +81,7 @@ const useStyles = makeStyles({
 });
 
 export function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 export default function Coinstable() {
@@ -140,13 +140,13 @@ export default function Coinstable() {
 
   const handleSearch = () => {
     if (!favorite) {
-      return coins.filter(
+      return coins?.filter(
         (coin) =>
           coin.name.toLowerCase().includes(search) ||
           coin.symbol.toLowerCase().includes(search)
       );
     } else {
-      return coins.filter(
+      return coins?.filter(
         (coin) =>
           watchlist.includes(coin.id) &&
           (coin.name.toLowerCase().includes(search) ||
@@ -450,7 +450,8 @@ export default function Coinstable() {
                       dir={theme.direction}
                       key={indValue}
                     >
-                      {loading ? (
+                      {
+                      loading ? (
                         <CircularProgress
                           style={{ color: circularProgressColor }}
                           size={250}
@@ -568,7 +569,7 @@ export default function Coinstable() {
                                         {symbol}
                                       </span>
                                       {numberWithCommas(
-                                        row?.current_price.toFixed(2)
+                                        row?.current_price?.toFixed(2)
                                       )}
                                       <span
                                         style={{
@@ -591,7 +592,8 @@ export default function Coinstable() {
                               </Box>
                             );
                           })
-                      )}
+                      )
+                      }
                     </TabPanel>
                   );
                 })}
@@ -679,7 +681,7 @@ export default function Coinstable() {
                             {symbol}
                             {numberWithCommas(
                               coinDetails?.market_data.current_price[
-                                currency.toLowerCase()
+                                currency?.toLowerCase()
                               ]
                             )}
                           </HeadingStyle>
